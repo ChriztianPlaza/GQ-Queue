@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Services</title>
+  <link rel="stylesheet" href="dashboard.css">
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    .services-table-container {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      margin-top: 2.5rem;
+      width: 100%;
+    }
+    .service-btns {
+      margin-bottom: 1rem;
+    }
+    .service-btns button {
+      background: #333;
+      color: #fff;
+      border: none;
+      border-radius: 4px;
+      padding: 0.4rem 1rem;
+      margin-right: 0.5rem;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .service-btns button:hover { background: #944c26; }
+    .services-table {
+      border-collapse: collapse;
+      min-width: 700px;
+      background: #fff;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+      width: 100%;
+    }
+    .services-table th {
+      background: #944c26;
+      color: #fff;
+      font-size: 1.15rem;
+      font-weight: 600;
+      padding: 1rem 1.5rem;
+      border: 1px solid #944c26;
+    }
+    .services-table td {
+      border: 1px solid #b97b4a;
+      padding: 0.9rem 1.5rem;
+      font-size: 1.1rem;
+      text-align: center;
+    }
+    .duration-green { color: #2ecc40; font-weight: 600; }
+    .duration-orange { color: #ff9900; font-weight: 600; }
+    .duration-red { color: #ff3b3b; font-weight: 600; }
+    @media (max-width: 900px) {
+      .services-table { min-width: 98vw; font-size: 0.95rem; }
+    }
+  </style>
+</head>
+<body>
+  <header class="dashboard-header">
+    <div class="logo-section">
+      <img src="src/gqlogo.jpg" alt="GQ Logo" class="side-logo" />
+      <span class="brand-title">BARBER SHOP</span>
+    </div>
+    <nav class="dashboard-nav">
+      <a href="dashboard.html">Dashboard</a>
+      <a href="barber-tracker.html">Barber Tracker</a>
+      <a href="services.html">Services</a>
+      <a href="discounts.html">Discounts</a>
+      <a href="records.html">Records</a>
+    </nav>
+    <div class="profile-icon">
+      <a href="profile.html"><i class="fa-regular fa-user"></i></a>
+    </div>
+  </header>
+  <main class="dashboard-main">
+    <h1 class="dashboard-title" style="text-align:left;">SERVICES</h1>
+    <div class="services-table-container">
+      <div class="service-btns">
+        <button onclick="addService()">Add Service</button>
+        <button onclick="deleteService()">Delete Service</button>
+      </div>
+      <table class="services-table" id="servicesTable">
+        <thead>
+          <tr>
+            <th>Services</th>
+            <th>Duration</th>
+            <th>Price</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td></td><td></td><td></td></tr>
+          <tr><td></td><td></td><td></td></tr>
+          <tr><td></td><td></td><td></td></tr>
+          <tr><td></td><td></td><td></td></tr>
+          <tr><td></td><td></td><td></td></tr>
+          <tr><td></td><td></td><td></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </main>
+  <script>
+    let services = [];
+    function addService() {
+      const name = prompt('Service name:');
+      if (!name) return;
+      const duration = prompt('Duration (e.g., 30 mins, 1 hr, 2 hrs):');
+      if (!duration) return;
+      const price = prompt('Price (e.g., PHP 280):');
+      if (!price) return;
+      services.push({ name, duration, price });
+      renderServices();
+    }
+    function deleteService() {
+      if (services.length === 0) return;
+      services.pop();
+      renderServices();
+    }
+    function getDurationClass(duration) {
+      // Normalize input
+      const d = duration.trim().toLowerCase();
+      if (d.endsWith('mins') || d.endsWith('min')) {
+        const mins = parseInt(d);
+        if (!isNaN(mins)) {
+          if (mins <= 30) return 'duration-green';
+          if (mins >= 60 && mins < 120) return 'duration-orange';
+          if (mins >= 120) return 'duration-red';
+        }
+      }
+      if (d === '1 hr' || d === '1hr' || d === '60 mins' || d === '60min') return 'duration-orange';
+      if (d === '2 hrs' || d === '2hrs' || d === '120 mins' || d === '120min') return 'duration-red';
+      return '';
+    }
+    function renderServices() {
+      const tbody = document.querySelector('#servicesTable tbody');
+      tbody.innerHTML = '';
+      // Render existing services
+      for (let i = 0; i < services.length; i++) {
+        const s = services[i];
+        const tr = document.createElement('tr');
+        const tdName = document.createElement('td');
+        tdName.textContent = s.name;
+        const tdDuration = document.createElement('td');
+        tdDuration.textContent = s.duration;
+        tdDuration.className = getDurationClass(s.duration);
+        const tdPrice = document.createElement('td');
+        tdPrice.textContent = s.price;
+        tr.appendChild(tdName);
+        tr.appendChild(tdDuration);
+        tr.appendChild(tdPrice);
+        tbody.appendChild(tr);
+      }
+      // Render empty rows to fill up to 6
+      for (let i = services.length; i < 6; i++) {
+        const tr = document.createElement('tr');
+        tr.innerHTML = '<td></td><td></td><td></td>';
+        tbody.appendChild(tr);
+      }
+    }
+    renderServices();
+  </script>
+</body>
+</html> 
